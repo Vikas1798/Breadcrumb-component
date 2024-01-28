@@ -1,10 +1,13 @@
 import AllRoutes from "./Navigation/routes";
 import './App.css';
+import AppWrapper from "./Components/AppWrapper";
 
 const App = () => {
     return (
         <main className="app">
-            <AllRoutes />
+            <AppWrapper>
+                <AllRoutes />
+            </AppWrapper>
         </main>
     );
 }
