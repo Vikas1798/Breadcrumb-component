@@ -1,8 +1,8 @@
 const App = () => {
     return (
-        <div>
+        <main>
             Breadcrumb Component
-        </div>
+        </main>
     );
 }
 
