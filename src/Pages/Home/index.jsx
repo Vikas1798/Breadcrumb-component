@@ -1,68 +1,75 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+import CardsLoading from '../../Components/CardsLoading';
+import ProductCard from '../../Components/ProductCard';
+import NoDataFound from '../../Components/NoDataFound';
 
 const Home = () => {
     let PRODUCTS = 'https://dummyjson.com/product';
+    const navigate = useNavigate();
+
     const [state, setState] = useState({
         products: [],
         load: false
     })
 
     useEffect(() => {
-        handleGetProducts();
-    }, []);
-
-    const handleGetProducts = async () => {
-        setState((prev) => {
-            return {
-                ...prev,
-                load: true,
-            };
-        });
-        try {
-            await fetch(PRODUCTS)
-                .then((res) => res?.json())
-                .then((res) => {
-                    setState((prev) => {
-                        return {
-                            ...prev,
-                            products: res?.products?.slice(0, 8) ?? [],
-                            load: false
-                        }
-                    })
-                });
-        } catch (error) {
+        const handleGetProducts = async () => {
             setState((prev) => {
                 return {
                     ...prev,
-                    load: false,
+                    load: true,
                 };
             });
-        }
-    };
+            try {
+                await fetch(PRODUCTS)
+                    .then((res) => res?.json())
+                    .then((res) => {
+                        setState((prev) => {
+                            return {
+                                ...prev,
+                                products: res?.products?.slice(0, 12) ?? [],
+                                load: false
+                            }
+                        })
+                    });
+            } catch (error) {
+                setState((prev) => {
+                    return {
+                        ...prev,
+                        load: false,
+                    };
+                });
+            }
+        };
 
-    // console.log('state?.products', state?.products)
+        handleGetProducts();
+    }, [])
 
     return (
-        <div className='text-4xl'>
-            <h1> Home Page </h1>
+        <section>
             {
-                state?.load ? <div> Loading...</div> :
+                state?.load ? <CardsLoading /> :
                     state?.products?.length ?
-                        <section className='grid grid-cols-1 lg:grid-cols-4 gap-4 my-10'>
+                        <section className='grid grid-cols-1 lg:grid-cols-4 gap-5 my-10'>
                             {
-                                state?.products?.map((d) => (
-                                    <div key={d?.id} className='bg-gray-300 rounded-lg p-[15px] cursor-pointer hover:shadow-md' >
-                                        <img src={d?.thumbnail} alt={d?.title} className='w-full object-cover aspect-square rounded-md' />
-                                        <p className='text-sm mt-2'> {d?.title} </p>
-                                    </div>
-                                )
-                                )
+                                state?.products?.map((d, i) => (
+                                    <div key={i}><ProductCard d={d} /></div>
+                                ))
                             }
                         </section>
                         :
-                        <div > No Data Found </div>
+                        <NoDataFound />
             }
-        </div >
+            {
+                state?.products?.length ?
+                    <div className='w-full flex justify-center'>
+                        <button onClick={() => navigate("/all-products")} className='bg-[#d9e7ff] text-[#4b8dff] border border-[#4b8dff] text-sm px-2 py-1 rounded-full font-semibold mb-5'> View All Products</button>
+                    </div>
+                    :
+                    <div></div>
+            }
+        </section>
     )
 }
 

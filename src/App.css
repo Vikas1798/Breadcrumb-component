@@ -4,4 +4,6 @@
 
 .app{
     font-family: 'Nunito', sans-serif;
+    background-color: #f6f8fa;
+    height: 100vh;
 }
